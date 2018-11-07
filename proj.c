@@ -1,20 +1,27 @@
 #include <GL/glut.h>
 #include <stdlib.h>
 #include<stdio.h>
-static float rotacija=0;
 static float x;
 static float y;
 static float z;
 static float xv;
 static float yv;
 static float zv;
+int w=0;
+int a=0;
+int d=0;
+int s=0;
+int q=0;
+int e=0;
+int br=0;
 static void ravan(void);
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_display(void);
 static void on_timer(int value);
+static void prepreke(int num);
 int main(int argc, char **argv)
 {
-    x=-5;y=0;z=0;//sta gledam
+    x=-100;y=0;z=0;//sta gledam
     xv=5;yv=0.5;zv=0;//odakle gledam
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
@@ -78,14 +85,14 @@ static void on_display(void){
             x, y, z, // u sta gledas (centar scene)
             0, 1, 0 // u koju stranu gledamo
                  );
-	glPushMatrix();//rotacija sfere, pocetak 
+	/*glPushMatrix();//rotacija sfere, pocetak 
           glRotatef(rotacija, 0, 1, 1);//ugao i ravan oko koje se rotira
 	  glColor3f(1,1,1);//boja
           glutWireSphere(1, 20, 20);//sama sfera
-        glPopMatrix();//kraj rotacije
-	/*glRotatef(rotacija, 0, 1, 0);
-	glutWireSphere(1, 20, 20);*/
-       glutSwapBuffers();
+        glPopMatrix();//kraj rotacije*/
+    	prepreke(20);
+/*-----------------------------------------------------------------------------------------------------------*/
+	glutSwapBuffers();
 }
 static void on_keyboard(unsigned char key, int x, int y){
 switch (key) {
@@ -93,26 +100,25 @@ switch (key) {
         exit(0);
         break;	
     case 'q':
-	zv+=0.2;
-	z+=0.2;
+	w=0;a=0;s=0;d=0;q=1;e=0;
 	break;
     case 'e':
-	zv-=0.2;
-	z-=0.2;
+	w=0;a=0;s=0;d=0;q=0;e=1;
 	break;
     case 'a':
-	z+=0.2;
+	a=1;d=0;q=0;e=0;
 	break;
     case 'd':
-	z-=0.2;
+	a=0;d=1;q=0;e=0;
 	break;
     case 'w':
-	xv-=0.2;
-	//x+=0.2;
+	w=1;a=0;s=0;d=0;q=0;e=0;	
 	break;
     case 's':
-	xv+=0.2;
-	//x-=0.2;
+	w=0;a=0;s=1;d=0;q=0;e=0;
+	break;
+    case ' ':
+	w=0;a=0;s=0;d=0;q=0;e=0;
 	break;
    }
 }
@@ -120,27 +126,27 @@ static void ravan(void){
 
 glColor3f(1,1,0);
 glBegin(GL_LINE_STRIP);
-	glVertex3f(5,0,5);
-	glVertex3f(5,0,-5);
-	glVertex3f(-5,0,-5);
-	glVertex3f(-5,0,5);
-	glVertex3f(5,0,5);
+	glVertex3f(20,0,20);
+	glVertex3f(20,0,-20);
+	glVertex3f(-20,0,-20);
+	glVertex3f(-20,0,20);
+	glVertex3f(20,0,20);
 glEnd();
 int i;
-float x=5;
-float z=5;
+float x=20;
+float z=20;
 glBegin(GL_LINES);
-	for(i=0;i<40;i++){
+	for(i=0;i<160;i++){
 	glVertex3f(x,0,z);
 	glVertex3f(x,0,-z);
 	x=x-0.25;
 	}
 
 glEnd();
-x=5;
-z=5;
+x=20;
+z=20;
 glBegin(GL_LINES);
-	for(i=0;i<40;i++){
+	for(i=0;i<160;i++){
 	glVertex3f(x,0,z);
 	glVertex3f(-x,0,z);
 	z=z-0.25;
@@ -151,11 +157,50 @@ glEnd();
 static void on_timer(int value){
 	if(value!=0)
 		return;
-	rotacija += 1;
+	if(w==1 && a==1){
+	xv-=0.1;
+	zv+=0.1;
+	z+=0.1;
+	}else if(a==1){
+		zv+=0.1;
+		z+=0.1;
+		}
+	
+	if(w==1 && d==1){
+	xv-=0.1;
+	zv-=0.1;
+	z-=0.1;
+	}else if(d==1){
+		zv-=0.1;
+	        z-=0.1;
+		}
+	if(w==1)
+		xv-=0.1;
+
+	if(s==1 && d==1){
+	xv+=0.1;
+	zv-=0.1;
+	z-=0.1;
+	}
+	if(s==1 && a==1){
+	xv+=0.1;
+	zv+=0.1;
+	z+=0.1;
+	}
+	if(s==1)
+		xv+=0.1;
+	if(q==1){
+		z+=3;
+		}
+	if(e==1){
+		z-=3;
+		}
         glutPostRedisplay();
 	glutTimerFunc(50, on_timer, 0);
 }
-
+static void prepreke(int num){
+	/*TODO*/
+}
 
 
 
