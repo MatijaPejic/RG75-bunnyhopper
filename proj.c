@@ -10,18 +10,21 @@ static float zv;
 int w=0;
 int a=0;
 int d=0;
+int c=0;
+int v=0;
+float visina_skoka=1;
 double start=0;
 double offset=0;
-double okvir=20;
+double okvir=6;
 static void ravan(double okvir,double offset);
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_display(void);
 static void on_timer(int value);
 static void prepreke(int num);
-int main(int argc, char **argv)
-{
+static void new_game(void);
+int main(int argc, char **argv){
     x=-100;y=0;z=0;//sta gledam
-    xv=20;yv=0.5;zv=0;//odakle gledam
+    xv=okvir;yv=0.5;zv=0;//odakle gledam
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 
@@ -68,11 +71,11 @@ static void on_display(void){
 
 	glColor3f(1,1,1);
 	glDisable(GL_LINE_SMOOTH);
-	if(start>=20){
+	if(start>=okvir){
 	  ravan(okvir,offset+2*okvir);
 	  //offset+=2*okvir;
 	}
-	if(start>=40){
+	if(start>=2*okvir){
 	  start=0;
 	  offset+=2*okvir;
 	}
@@ -104,7 +107,15 @@ static void on_keyboard(unsigned char key, int x, int y){
 switch (key) {
     case 27:
         exit(0);
-        break;	
+        break;
+    case 'v':
+      v=1;
+      c=0;
+      break;
+    case 'c':
+      c=1;
+      v=0;
+      break;
     case 'a':
 	a=1;d=0;
 	break;
@@ -133,7 +144,7 @@ int i;
 float x=okvir;
 float z=okvir;
 glBegin(GL_LINES);
-	for(i=0;i<160;i++){
+	for(i=0;i<okvir*8;i++){
 	glVertex3f(x-offset,0,z);
 	glVertex3f(x-offset,0,-z);
 	x=x-0.25;
@@ -143,7 +154,7 @@ glEnd();
 x=okvir;
 z=okvir;
 glBegin(GL_LINES);
-	for(i=0;i<160;i++){
+	for(i=0;i<okvir*8;i++){
 	glVertex3f(x-offset,0,z);
 	glVertex3f(-x-offset,0,z);
 	z=z-0.25;
@@ -154,6 +165,14 @@ glEnd();
 static void on_timer(int value){
 	if(value!=0)
 		return;
+	if(yv<-5)
+	 new_game();
+	if(zv>okvir || zv<-okvir || yv<0)
+	  yv-=0.2;
+	if(c==1)
+	    yv=visina_skoka;
+	if(v==1 && yv>=0.5)
+	  yv=0.5;
 	if(w==1 && a==1){
 	   xv-=0.1;
 	   zv+=0.1;
@@ -180,6 +199,16 @@ static void on_timer(int value){
 }
 static void prepreke(int num){
 	/*TODO*/
+}
+static void new_game(void){
+w=0;
+a=0;
+d=0;
+start=0;
+offset=0;
+okvir=6;
+x=-100;y=0;z=0;
+xv=okvir;yv=0.5;zv=0;
 }
 
 
