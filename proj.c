@@ -10,11 +10,10 @@ static float zv;
 int w=0;
 int a=0;
 int d=0;
-int s=0;
-int q=0;
-int e=0;
-int br=0;
-static void ravan(void);
+double start=0;
+double offset=0;
+double okvir=20;
+static void ravan(double okvir,double offset);
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_display(void);
 static void on_timer(int value);
@@ -22,7 +21,7 @@ static void prepreke(int num);
 int main(int argc, char **argv)
 {
     x=-100;y=0;z=0;//sta gledam
-    xv=5;yv=0.5;zv=0;//odakle gledam
+    xv=20;yv=0.5;zv=0;//odakle gledam
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 
@@ -69,8 +68,15 @@ static void on_display(void){
 
 	glColor3f(1,1,1);
 	glDisable(GL_LINE_SMOOTH);
-	ravan();
-	
+	if(start>=20){
+	  ravan(okvir,offset+2*okvir);
+	  //offset+=2*okvir;
+	}
+	if(start>=40){
+	  start=0;
+	  offset+=2*okvir;
+	}
+	ravan(okvir,offset);
 	glViewport(0, 0, 800, 600);// za prilagodjavanje slike velicini ekrana
 	glMatrixMode(GL_PROJECTION);//ucitavamo matricu za projekciju
         glLoadIdentity();// i identitet
@@ -99,56 +105,47 @@ switch (key) {
     case 27:
         exit(0);
         break;	
-    case 'q':
-	w=0;a=0;s=0;d=0;q=1;e=0;
-	break;
-    case 'e':
-	w=0;a=0;s=0;d=0;q=0;e=1;
-	break;
     case 'a':
-	a=1;d=0;q=0;e=0;
+	a=1;d=0;
 	break;
     case 'd':
-	a=0;d=1;q=0;e=0;
+	a=0;d=1;
 	break;
     case 'w':
-	w=1;a=0;s=0;d=0;q=0;e=0;	
-	break;
-    case 's':
-	w=0;a=0;s=1;d=0;q=0;e=0;
+	w=1;a=0;d=0;	
 	break;
     case ' ':
-	w=0;a=0;s=0;d=0;q=0;e=0;
+	w=0;a=0;d=0;
 	break;
    }
 }
-static void ravan(void){
-
+static void ravan(double okvir,double offset){
+//printf("start je : %f\n",start);
 glColor3f(1,1,0);
 glBegin(GL_LINE_STRIP);
-	glVertex3f(20,0,20);
-	glVertex3f(20,0,-20);
-	glVertex3f(-20,0,-20);
-	glVertex3f(-20,0,20);
-	glVertex3f(20,0,20);
+	glVertex3f(okvir-offset,0,okvir);
+	glVertex3f(okvir-offset,0,-okvir);
+	glVertex3f(-okvir-offset,0,-okvir);
+	glVertex3f(-okvir-offset,0,okvir);
+	glVertex3f(okvir-offset,0,okvir);
 glEnd();
 int i;
-float x=20;
-float z=20;
+float x=okvir;
+float z=okvir;
 glBegin(GL_LINES);
 	for(i=0;i<160;i++){
-	glVertex3f(x,0,z);
-	glVertex3f(x,0,-z);
+	glVertex3f(x-offset,0,z);
+	glVertex3f(x-offset,0,-z);
 	x=x-0.25;
 	}
 
 glEnd();
-x=20;
-z=20;
+x=okvir;
+z=okvir;
 glBegin(GL_LINES);
 	for(i=0;i<160;i++){
-	glVertex3f(x,0,z);
-	glVertex3f(-x,0,z);
+	glVertex3f(x-offset,0,z);
+	glVertex3f(-x-offset,0,z);
 	z=z-0.25;
 	}
 
@@ -158,43 +155,26 @@ static void on_timer(int value){
 	if(value!=0)
 		return;
 	if(w==1 && a==1){
-	xv-=0.1;
-	zv+=0.1;
-	z+=0.1;
+	   xv-=0.1;
+	   zv+=0.1;
+	   z+=0.1;
+	   start+=0.1;
+	}else if(w==1 && d==1){
+	  xv-=0.1;
+	  zv-=0.1;
+	  z-=0.1;
+	  start+=0.1;
+	}else if(w==1){
+	  xv-=0.1;
+	  start+=0.1;
 	}else if(a==1){
-		zv+=0.1;
-		z+=0.1;
-		}
-	
-	if(w==1 && d==1){
-	xv-=0.1;
-	zv-=0.1;
-	z-=0.1;
+	  zv+=0.1;
+	  z+=0.1;
 	}else if(d==1){
-		zv-=0.1;
-	        z-=0.1;
-		}
-	if(w==1)
-		xv-=0.1;
-
-	if(s==1 && d==1){
-	xv+=0.1;
-	zv-=0.1;
-	z-=0.1;
+	  zv-=0.1;
+	  z-=0.1;
 	}
-	if(s==1 && a==1){
-	xv+=0.1;
-	zv+=0.1;
-	z+=0.1;
-	}
-	if(s==1)
-		xv+=0.1;
-	if(q==1){
-		z+=3;
-		}
-	if(e==1){
-		z-=3;
-		}
+		
         glutPostRedisplay();
 	glutTimerFunc(50, on_timer, 0);
 }
