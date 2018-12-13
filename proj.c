@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include<stdio.h>
 #include<string.h>
+#include<unistd.h>
 static float x;
 static float y;
 static float z;
@@ -13,6 +14,8 @@ int a=0;
 int d=0;
 int c=0;
 int v=0;
+int score=0;
+int highScore=0;
 float visina_skoka=1;
 double start=0;
 double offset=0;
@@ -25,6 +28,8 @@ static void on_timer(int value);
 static void prepreke(double offset);
 static void new_game(void);
 static void sudar(double zv, double z1, double z2, double x);
+static void output(double x,double y,double z,const char *string);
+static void miniMenu();
 int main(int argc, char **argv){
     x=-100;y=0;z=0;//sta gledam
     xv=okvir;yv=0.5;zv=0;//odakle gledam
@@ -50,28 +55,6 @@ int main(int argc, char **argv){
 }
 static void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*glEnable(GL_LINE_SMOOTH);
-	glLineWidth(20);
-	glBegin(GL_LINES);//x osa , crvena
-	glColor3f(1,0,0);
-	glVertex3f(0,0,0);
-	glVertex3f(5,0,0);
-	glEnd();
-
-	glBegin(GL_LINES);//y osa , zelena
-	glColor3f(0,1,0);
-	glVertex3f(0,0,0);
-	glVertex3f(0,20,0);
-	glEnd();
-
-	glBegin(GL_LINES);//z osa , plava
-	glColor3f(0,0,1);
-	glVertex3f(0,0,0);
-	glVertex3f(0,0,5);
-	glVertex3f(0,0,0);
-	glVertex3f(0,0,-5);
-	glEnd();*/
-
 	glColor3f(1,1,1);
 	glDisable(GL_LINE_SMOOTH);
 	if(start>=okvir/8){
@@ -83,6 +66,7 @@ static void on_display(void){
 	  start=0;
 	  offset+=2*okvir;
 	}
+	miniMenu();
 	ravan(okvir,offset);
 	prepreke(offset);
 	glViewport(0, 0, 800, 600);// za prilagodjavanje slike velicini ekrana
@@ -99,6 +83,7 @@ static void on_display(void){
             x, y, z, // u sta gledas (centar scene)
             0, 1, 0 // u koju stranu gledamo
                  );
+	
 	/*glPushMatrix();//rotacija sfere, pocetak 
           glRotatef(rotacija, 0, 1, 1);//ugao i ravan oko koje se rotira
 	  glColor3f(1,1,1);//boja
@@ -199,8 +184,10 @@ static void on_timer(int value){
   //printf("%f\n",zv);
 	if(value!=0)
 		return;
-	if(yv<-5)
+	if(yv<-5){
+	  //menu(score);
 	 new_game();
+	}
 	if(zv>okvir || zv<-okvir || yv<0)
 	  yv-=0.2;
 	if(c==1){
@@ -219,14 +206,17 @@ static void on_timer(int value){
 	   zv+=0.1;
 	   z+=0.1;
 	   start+=0.1;
+	   score+=5;
 	}else if(w==1 && d==1){
 	  xv-=0.1;
 	  zv-=0.1;
 	  z-=0.1;
 	  start+=0.1;
+	  score+=5;
 	}else if(w==1){
 	  xv-=0.1;
 	  start+=0.1;
+	  score+=5;
 	}else if(a==1){
 	  zv+=0.1;
 	  z+=0.1;
@@ -347,6 +337,9 @@ offset=0;
 okvir=6;
 x=-100;y=0;z=0;
 xv=okvir;yv=0.5;zv=0;
+if(score >= highScore)
+  highScore=score;
+score=0;
 }
 static void sudar(double zv, double z1, double z2, double x){ // (zv,manja z vr, veca z vr, x na kojoj je objekat)
   if(c == 1)
@@ -354,7 +347,33 @@ static void sudar(double zv, double z1, double z2, double x){ // (zv,manja z vr,
   if (zv >= z1 && zv <= z2 && xv <= x && xv >= x-0.1)
     new_game();
 }
-
+static void output(double x,double y,double z,const char *string){//Preuzeto sam man strane za glutBitmapCharacter
+  int len,i;
+  glRasterPos3f(x,y,z);
+  len=(int)strlen(string);
+  for(i=0;i<len;i++){
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,string[i]);
+  }
+  
+}
+static void miniMenu(){
+/*glColor3f(0,0.5,0);
+glBegin(GL_QUADS);  
+  glVertex3f(xv-7,2.5,10);
+  glVertex3f(xv-7,3.5,10);
+  glVertex3f(xv-7,3.5,-10);
+  glVertex3f(xv-7,2.5,-10);
+glEnd();*/
+glColor3f(1,1,1);
+output(xv-6,2+yv,zv+2.8,"Current score: ");
+char str[12];
+sprintf(str, "%d", score);
+output(xv-6,2+yv,zv+1.5,str);
+output(xv-6,1.8+yv,zv+2.8,"This session's highest score: ");
+char str2[12];
+sprintf(str2, "%d", highScore);
+output(xv-6,1.8+yv,zv+1,str2);
+}
 
 
 
