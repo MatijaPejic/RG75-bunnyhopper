@@ -55,6 +55,52 @@ int main(int argc, char **argv){
 }
 static void on_display(void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//////////////////////////////////////////////
+	glShadeModel(GL_SMOOTH);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_COLOR_MATERIAL);
+	GLfloat light_position[] = { xv, yv+2, zv+1, 1 };
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	
+	GLfloat light_ambient[] = { 0, 0, 0, 1 };
+	GLfloat ambient_coeffs[] = { 1, 1, 1, 1 };
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient_coeffs);
+	
+	GLfloat light_diffuse[] = {1.5, 1.5, 1.5, 1 };
+	GLfloat diffuse_coeffs[] = { 0.0, 0.0, 1, 1 };
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse_coeffs);
+	
+	GLfloat light_specular[] = { 0.9, 0, 0, 1 };
+	GLfloat specular_coeffs[] = { 1, 1, 1, 1 };
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular_coeffs);
+	
+	GLfloat shininess = 120;
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+	
+	/*GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 1 };
+	GLfloat light_diffuse[] = { 0.7, 0.7, 0.7, 1 };
+	GLfloat light_specular[] = { 0.9, 0.9, 0.9, 1 };
+	GLfloat ambient_coeffs[] = { 1.0, 0.1, 0.1, 1 };
+	GLfloat diffuse_coeffs[] = { 0.0, 0.0, 0.8, 1 };
+	GLfloat specular_coeffs[] = { 1, 1, 1, 1 };
+	GLfloat shininess = 20;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
+	glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse_coeffs);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specular_coeffs);
+	glMaterialf(GL_FRONT, GL_SHININESS, shininess);*/
+	 //////////////////////////////////////////////
 	glColor3f(1,1,1);
 	glDisable(GL_LINE_SMOOTH);
 	if(start>=okvir/8){
@@ -83,7 +129,8 @@ static void on_display(void){
             x, y, z, // u sta gledas (centar scene)
             0, 1, 0 // u koju stranu gledamo
                  );
-	
+	////////////////////////////////////////////////
+	///////////////////////////////////////////////
 	/*glPushMatrix();//rotacija sfere, pocetak 
           glRotatef(rotacija, 0, 1, 1);//ugao i ravan oko koje se rotira
 	  glColor3f(1,1,1);//boja
@@ -231,6 +278,7 @@ static void on_timer(int value){
 static void prepreke(double offset){//(zv,manja z vr, veca z vr, x na kojoj je objekat)
 glColor3f(1,0,0);
 glBegin(GL_QUADS);
+ // glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(0-offset,0,4);
   glVertex3f(0-offset,0.5,4);
   glVertex3f(0-offset,0,2);
@@ -241,6 +289,7 @@ sudar(zv,2,4,0-offset);
 
 glColor3f(0,0,1);
 glBegin(GL_QUADS);
+ // glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(2-offset,0,2);
   glVertex3f(2-offset,0.5,2);
   glVertex3f(2-offset,0.5,-1);
@@ -251,6 +300,7 @@ sudar(zv,-1,2,2-offset);
 
 glColor3f(1,1,0);
 glBegin(GL_QUADS);
+  //glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(0-offset,0,-2);
   glVertex3f(0-offset,1,-2);
   glVertex3f(0-offset,0,-5);
@@ -260,6 +310,7 @@ glEnd();
 sudar(zv,-5,-2,0-offset);
 
 glBegin(GL_TRIANGLES);
+  //glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(4-offset,0,0);
   glVertex3f(4-offset,1,0);
   glVertex3f(4-offset,0,3);
@@ -269,6 +320,7 @@ sudar(zv,0,3,4-offset);
 
 glColor3f(0,1,1);
 glBegin(GL_TRIANGLES);
+  //glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(4-offset,0,-2);
   glVertex3f(4-offset,1,-3);
   glVertex3f(4-offset,0,-5);
@@ -277,6 +329,7 @@ glEnd();
 sudar(zv,-5,-2,4-offset);
 
 glBegin(GL_TRIANGLES);
+  //glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(8-offset,0,4);
   glVertex3f(8-offset,1,4);
   glVertex3f(8-offset,0,6);
@@ -286,6 +339,7 @@ glEnd();
 sudar(zv,4,6,8-offset);
 
 glBegin(GL_QUADS);
+  //glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(9-offset,0,-2);
   glVertex3f(9-offset,0.5,-2);
   glVertex3f(9-offset,0.5,1);
@@ -297,6 +351,7 @@ sudar(zv,-2,1,9-offset);
 
 
 glBegin(GL_QUADS);
+ // glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(-2-offset,0,6);
   glVertex3f(-2-offset,0.5,6);
   glVertex3f(-2-offset,0,4);
@@ -307,6 +362,7 @@ sudar(zv,4,6,-2-offset);
 
 glColor3f(1,1,1);
 glBegin(GL_QUADS);
+ // glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(4-offset,0,5);
   glVertex3f(4-offset,0.5,5);
   glVertex3f(4-offset,0.5,4);
@@ -317,6 +373,7 @@ sudar(zv,4,5,4-offset);
 
 
 glBegin(GL_QUADS);
+ // glMaterialfv(GL_FRONT, GL_AMBIENT, ambient_coeffs);
   glVertex3f(-5-offset,0,-2);
   glVertex3f(-5-offset,1,-2);
   glVertex3f(-5-offset,0,-5);
